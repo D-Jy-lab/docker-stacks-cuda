@@ -1,6 +1,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG OWNER=jupyter
+ARG OWNER=duan2001
 ARG BASE_CONTAINER=$OWNER/docker-stacks-foundation
 FROM $BASE_CONTAINER
 
@@ -39,6 +39,7 @@ RUN mamba install --yes \
     'jupyterlab' \
     'notebook' \
     'jupyterhub' \
+    'jupyterlab-language-pack-zh-CN' \
     'nbclassic' && \
     jupyter server --generate-config && \
     mamba clean --all -f -y && \
@@ -68,7 +69,7 @@ RUN fix-permissions /etc/jupyter/
 HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
     CMD /etc/jupyter/docker_healthcheck.py || exit 1
 
-# Switch back to jovyan to avoid accidental container runs as root
+# Switch back to duan to avoid accidental container runs as root
 USER ${NB_UID}
 
 WORKDIR "${HOME}"

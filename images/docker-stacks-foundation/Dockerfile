@@ -3,12 +3,12 @@
 
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/tags?page=1&name=jammy
-ARG ROOT_CONTAINER=ubuntu:22.04
+ARG ROOT_CONTAINER=nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 FROM $ROOT_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
-ARG NB_USER="jovyan"
+LABEL maintainer="Jupyter Project <jupyter@d-jy.net>"
+ARG NB_USER="duan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
 
@@ -28,6 +28,15 @@ RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
     # - bzip2 is necessary to extract the micromamba executable.
     bzip2 \
+    zip \
+    unzip \
+    zstd \
+    rar \
+    unrar \
+    p7zip \
+    p7zip-full \
+    p7zip-rar \
+    pax \
     ca-certificates \
     locales \
     sudo \
@@ -35,6 +44,11 @@ RUN apt-get update --yes && \
     #   processes and such of the actual executable we want to start, see
     #   https://github.com/krallin/tini#why-tini for details.
     tini \
+    ca-certificates \
+    nano \
+    curl \
+    aria2 \
+    net-tools \
     wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -62,7 +76,7 @@ RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashr
    # Add call to conda init script see https://stackoverflow.com/a/58081608/4413446
    echo 'eval "$(command conda shell.bash hook 2> /dev/null)"' >> /etc/skel/.bashrc
 
-# Create NB_USER with name jovyan user with UID=1000 and in the 'users' group
+# Create NB_USER with name duan user with UID=1000 and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
@@ -135,7 +149,7 @@ USER root
 RUN mkdir /usr/local/bin/start-notebook.d && \
     mkdir /usr/local/bin/before-notebook.d
 
-# Switch back to jovyan to avoid accidental container runs as root
+# Switch back to duan to avoid accidental container runs as root
 USER ${NB_UID}
 
 WORKDIR "${HOME}"
