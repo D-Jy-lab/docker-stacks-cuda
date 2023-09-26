@@ -1,7 +1,7 @@
 name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
 
 env:
-  OWNER: ${{ github.repository_owner }}
+  OWNER: duan2001
 
 on:
   workflow_call:
