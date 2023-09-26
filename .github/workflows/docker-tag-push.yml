@@ -1,7 +1,7 @@
 name: Download Docker image and its tags from GitHub artifacts, apply them and push the image to Docker Hub
 
 env:
-  OWNER: ${{ github.repository_owner }}
+  OWNER: duan2001
 
 on:
   workflow_call:
