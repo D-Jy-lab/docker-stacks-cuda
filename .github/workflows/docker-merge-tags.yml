@@ -49,13 +49,13 @@ jobs:
         shell: bash
 
       - name: Login to Docker Hub 🔐
-        if: github.repository == 'jupyter/docker-stacks' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
+        if: github.repository == 'D-Jy-lab/docker-stacks-cuda' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Merge tags for the images 🔀
-        if: github.repository == 'jupyter/docker-stacks' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
+        if: github.repository == 'D-Jy-lab/docker-stacks-cuda' && (github.ref == 'refs/heads/main' || github.event_name == 'schedule')
         run: python3 -m tagging.merge_tags --short-image-name ${{ inputs.image }} --tags-dir /tmp/jupyter/tags/
         shell: bash
