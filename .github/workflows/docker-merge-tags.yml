@@ -1,7 +1,7 @@
 name: Download images tags from GitHub artifacts and create multi-platform manifests
 
 env:
-  OWNER: ${{ github.repository_owner }}
+  OWNER: duan2001
 
 on:
   workflow_call:
