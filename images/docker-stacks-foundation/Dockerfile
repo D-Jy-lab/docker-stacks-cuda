@@ -48,8 +48,15 @@ RUN apt-get update --yes && \
     nano \
     curl \
     aria2 \
+    nodejs \
+    aptitude \
+    ssh \
+    software-properties-common \
     net-tools \
     wget && \
+    add-apt-repository ppa:apt-fast/stable && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install --yes --no-install-recommends apt-fast && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
