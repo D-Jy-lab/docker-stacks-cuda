@@ -1,6 +1,6 @@
 # Jupyter Docker Stacks with NVIDIA GPU
 
-本项目基于原有的Jupyter Docker Stacks项目，添加了常用工具和对NVIDIA GPU的支持。
+本项目基于原有的Jupyter Docker Stacks项目，添加了常用工具和对NVIDIA GPU的支持，便于开箱即用。
 
 ## 快速开始
 
