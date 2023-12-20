@@ -8,11 +8,11 @@ Following these steps will:
 
 1. Set up a project on GitHub containing a Dockerfile based on any image we provide.
 2. Configure GitHub Actions to build and test your image when users submit pull requests to your repository.
-3. Configure Docker Hub to host your images for others to use.
+3. Configure Quay.io to host your images for others to use.
 4. Update the [list of community stacks](../using/selecting.md#community-stacks) in this documentation to include your image.
 
 This approach mirrors how we build and share the core stack images.
-Feel free to follow it or pave your own path using alternative services and build tools.
+Feel free to follow it or pave your path using alternative services and build tools.
 
 ## Creating a Project
 
@@ -35,8 +35,8 @@ This will serve as both the git repository name and the part of the Docker image
 stack_name [my-jupyter-stack]:
 ```
 
-Enter the user or organization name under which this stack will reside on Docker Hub.
-You must have access to manage this Docker Hub organization to push images here.
+Enter the user or organization name under which this stack will reside on Quay.io.
+You must have access to manage this Quay.io organization to push images here.
 
 ```text
 stack_org [my-project]:
@@ -45,7 +45,7 @@ stack_org [my-project]:
 Select an image from the `jupyter/docker-stacks` project that will serve as the base for your new image.
 
 ```text
-stack_base_image [jupyter/base-notebook]:
+stack_base_image [quay.io/jupyter/base-notebook]:
 ```
 
 Enter a longer description of the stack for your README.
@@ -79,7 +79,7 @@ git push -u origin main
    ![GitHub page for jupyter/docker-stacks with the Actions tab active and a rectangle around the "Build Docker Images" workflow in the UI](../_static/contributing/stacks/github-actions-tab.png)
 
    ```{note}
-   First run is expected to fail, because we haven't yet added Docker credentials to push the image
+   The first run is expected to fail because we haven't yet added Docker credentials to push the image
    ```
 
 3. In the next screen, you will see information about the workflow run and duration.
@@ -89,6 +89,10 @@ git push -u origin main
 
 ## Configuring Docker Hub
 
+```{note}
+Jupyter Docker Stacks are hosted on Quay.io, but in this example, we show you how to host your image on Docker Hub.
+```
+
 Now, configure Docker Hub to build your stack image and push it to the Docker Hub repository whenever
 you merge a GitHub pull request to the main branch of your project.
 
@@ -96,12 +100,12 @@ you merge a GitHub pull request to the main branch of your project.
 2. Create a new repository - make sure to use the correct namespace (account or organization).
    Enter the name of the image matching the one you entered when prompted with `stack_name` by the cookiecutter.
 
-   ![Docker Hub - Create Repository page with the name field set to "My specialized jupyter stack"](../_static/contributing/stacks/docker-repo-name.png)
+   ![Docker Hub - 'Create repository' page with the name field set to "My specialized jupyter stack"](../_static/contributing/stacks/docker-repo-name.png)
 
 3. Enter a description for your image.
-4. Click on your avatar in the top-right corner and select Account settings.
+4. Click on your avatar in the top-right corner and select Account Settings.
 
-   ![Docker Hub page zoomed into the user's settings and accounts menu](../_static/contributing/stacks/docker-user-dropdown.png)
+   ![The Docker Hub page zoomed into the user's settings and accounts menu](../_static/contributing/stacks/docker-user-dropdown.png)
 
 5. Click on **Security** and then click on the **New Access Token** button.
 
@@ -136,8 +140,8 @@ to get a feel for what's possible and the best practices.
 
 [Submit pull requests](https://github.com/PointCloudLibrary/pcl/wiki/A-step-by-step-guide-on-preparing-and-submitting-a-pull-request)
 to your project repository on GitHub.
-Ensure your image builds correctly on GitHub actions before merging to the main branch.
-Refer to Docker Hub to build the main branch that you can `docker pull`.
+Ensure your image builds correctly on GitHub Actions before merging to the main branch.
+After merging to the main branch, your image will be built and pushed to the Docker Hub automatically.
 
 ## Sharing Your Image
 
@@ -145,6 +149,6 @@ Finally, if you'd like to add a link to your project to this documentation site,
 
 1. Fork the [jupyter/docker-stacks](https://github.com/jupyter/docker-stacks) GitHub repository.
 2. Open the `docs/using/selecting.md` source file and locate the **Community Stacks** section in your fork.
-3. Add a table entry with a link to your project, a binder link and a short description of what your Docker image contains.
+3. Add a table entry with a link to your project, a binder link, and a short description of what your Docker image contains.
 4. [Submit a pull request](https://github.com/PointCloudLibrary/pcl/wiki/A-step-by-step-guide-on-preparing-and-submitting-a-pull-request)(PR) with your changes.
    Maintainers will respond and work with you to address any formatting or content issues.

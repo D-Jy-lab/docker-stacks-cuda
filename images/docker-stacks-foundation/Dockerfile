@@ -3,7 +3,7 @@
 
 # Ubuntu 22.04 (jammy)
 # https://hub.docker.com/_/ubuntu/tags?page=1&name=jammy
-ARG ROOT_CONTAINER=nvidia/cuda:12.2.0-devel-ubuntu22.04
+ARG ROOT_CONTAINER=nvidia/cuda:12.3.1-devel-ubuntu22.04
 
 FROM $ROOT_CONTAINER
 
@@ -18,12 +18,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER root
 
-# Install all OS dependencies for Server that starts
+# Install all OS dependencies for the Server that starts
 # but lacks all features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update --yes && \
-    # - apt-get upgrade is run to patch known vulnerabilities in apt-get packages as
-    #   the ubuntu base image is rebuilt too seldom sometimes (less than once a month)
+    # - `apt-get upgrade` is run to patch known vulnerabilities in apt-get packages as
+    #   the Ubuntu base image is rebuilt too seldom sometimes (less than once a month)
     apt-get upgrade --yes && \
     apt-get install --yes --no-install-recommends \
     # - bzip2 is necessary to extract the micromamba executable.
@@ -51,8 +51,12 @@ RUN apt-get update --yes && \
     nodejs \
     aptitude \
     ssh \
+    gpustat \
+    nvtop \
+    pipx \
     software-properties-common \
     net-tools \
+    iputils-ping \
     wget && \
     add-apt-repository ppa:apt-fast/stable && \
     add-apt-repository ppa:deadsnakes/ppa && \
@@ -80,8 +84,9 @@ RUN chmod a+rx /usr/local/bin/fix-permissions
 # Enable prompt color in the skeleton .bashrc before creating the default NB_USER
 # hadolint ignore=SC2016
 RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashrc && \
-   # Add call to conda init script see https://stackoverflow.com/a/58081608/4413446
-   echo 'eval "$(command conda shell.bash hook 2> /dev/null)"' >> /etc/skel/.bashrc
+    # More information in: https://github.com/jupyter/docker-stacks/pull/2047
+    # and docs: https://docs.conda.io/projects/conda/en/latest/dev-guide/deep-dives/activation.html
+    echo 'eval "$(conda shell.bash hook)"' >> /etc/skel/.bashrc
 
 # Create NB_USER with name duan user with UID=1000 and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
@@ -97,19 +102,19 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
 
 USER ${NB_UID}
 
-# Pin python version here, or set it to "default"
+# Pin the Python version here, or set it to "default"
 ARG PYTHON_VERSION=3.11
 
 # Setup work directory for backward-compatibility
 RUN mkdir "/home/${NB_USER}/work" && \
     fix-permissions "/home/${NB_USER}"
 
-# Download and install Micromamba, and initialize Conda prefix.
+# Download and install Micromamba, and initialize the Conda prefix.
 #   <https://github.com/mamba-org/mamba#micromamba>
 #   Similar projects using Micromamba:
 #     - Micromamba-Docker: <https://github.com/mamba-org/micromamba-docker>
 #     - repo2docker: <https://github.com/jupyterhub/repo2docker>
-# Install Python, Mamba and jupyter_core
+# Install Python, Mamba, and jupyter_core
 # Cleanup temporary files and remove Micromamba
 # Correct permissions
 # Do all this in a single RUN command to avoid duplicating all of the
@@ -155,6 +160,8 @@ USER root
 # Create dirs for startup hooks
 RUN mkdir /usr/local/bin/start-notebook.d && \
     mkdir /usr/local/bin/before-notebook.d
+
+COPY 10activate-conda-env.sh /usr/local/bin/before-notebook.d/
 
 # Switch back to duan to avoid accidental container runs as root
 USER ${NB_UID}

@@ -4,7 +4,7 @@
 """
 test_packages
 ~~~~~~~~~~~~~~~
-This test module tests if R and Python packages installed can be imported.
+This test module tests if the R and Python packages installed can be imported.
 It's a basic test aiming to prove that the package is working properly.
 
 The goal is to detect import errors that can be caused by incompatibilities between packages, for example:
@@ -15,8 +15,8 @@ The goal is to detect import errors that can be caused by incompatibilities betw
 This module checks dynamically, through the `CondaPackageHelper`,
 only the requested packages i.e. packages requested by `mamba install` in the `Dockerfile`s.
 This means that it does not check dependencies.
-This choice is a tradeoff to cover the main requirements while achieving reasonable test duration.
-However it could be easily changed (or completed) to cover also dependencies.
+This choice is a tradeoff to cover the main requirements while achieving a reasonable test duration.
+However, it could be easily changed (or completed) to cover dependencies as well.
 Use `package_helper.installed_packages()` instead of `package_helper.requested_packages()`.
 
 Example:
@@ -24,15 +24,14 @@ Example:
     $ make test/base-notebook
 
     # [...]
-    # test/test_packages.py::test_python_packages
     # tests/base-notebook/test_packages.py::test_python_packages
     # ---------------------------------------------------------------------------------------------- live log setup ----------------------------------------------------------------------------------------------
-    # 2022-02-17 16:44:36 [    INFO] Starting container jupyter/base-notebook ... (package_helper.py:55)
-    # 2022-02-17 16:44:36 [    INFO] Running jupyter/base-notebook with args {'detach': True, 'tty': True, 'command': ['start.sh', 'bash', '-c', 'sleep infinity']} ... (conftest.py:95)
-    # 2022-02-17 16:44:37 [    INFO] Grabbing the list of manually requested packages ... (package_helper.py:83)
+    # 2023-11-04 23:59:01 [    INFO] Starting container quay.io/jupyter/base-notebook ... (package_helper.py:55)
+    # 2023-11-04 23:59:01 [    INFO] Running quay.io/jupyter/base-notebook with args {'detach': True, 'tty': True, 'command': ['start.sh', 'bash', '-c', 'sleep infinity']} ... (conftest.py:99)
+    # 2023-11-04 23:59:01 [    INFO] Grabbing the list of manually requested packages ... (package_helper.py:83)
     # ---------------------------------------------------------------------------------------------- live log call -----------------------------------------------------------------------------------------------
-    # 2022-02-17 16:44:38 [    INFO] Testing the import of packages ... (test_packages.py:144)
-    # 2022-02-17 16:44:38 [    INFO] Trying to import mamba (test_packages.py:146)
+    # 2023-11-04 23:59:02 [    INFO] Testing the import of packages ... (test_packages.py:152)
+    # 2023-11-04 23:59:02 [    INFO] Trying to import mamba (test_packages.py:154)
     # [...]
 
 """
@@ -69,6 +68,8 @@ EXCLUDED_PACKAGES = [
     "bzip2",
     "ca-certificates",
     "conda-forge::blas[build=openblas]",
+    "grpcio-status",
+    "grpcio",
     "hdf5",
     "jupyterlab-git",
     "openssl",
@@ -144,7 +145,7 @@ def _check_import_packages(
     """Test if packages can be imported
 
     Note: using a list of packages instead of a fixture for the list of packages
-    since pytest prevents use of multiple yields
+    since pytest prevents the use of multiple yields
     """
     failures = {}
     LOGGER.info("Testing the import of packages ...")

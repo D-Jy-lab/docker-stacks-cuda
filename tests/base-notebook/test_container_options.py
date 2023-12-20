@@ -15,7 +15,7 @@ def test_cli_args(container: TrackedContainer, http_client: requests.Session) ->
     """Image should respect command line args (e.g., disabling token security)"""
     host_port = find_free_port()
     running_container = container.run_detached(
-        command=["start-notebook.sh", "--IdentityProvider.token=''"],
+        command=["start-notebook.py", "--IdentityProvider.token=''"],
         ports={"8888/tcp": host_port},
     )
     resp = http_client.get(f"http://localhost:{host_port}")
@@ -42,7 +42,7 @@ def test_nb_user_change(container: TrackedContainer) -> None:
     # Use sleep, not wait, because the container sleeps forever.
     time.sleep(1)
     LOGGER.info(
-        f"Checking if home folder of {nb_user} contains the hidden '.jupyter' folder with appropriate permissions ..."
+        f"Checking if a home folder of {nb_user} contains the hidden '.jupyter' folder with appropriate permissions ..."
     )
     command = f'stat -c "%F %U %G" /home/{nb_user}/.jupyter'
     expected_output = f"directory {nb_user} users"
@@ -102,7 +102,7 @@ def test_custom_internal_port(
     host_port = find_free_port()
     internal_port = env.get("JUPYTER_PORT", 8888)
     running_container = container.run_detached(
-        command=["start-notebook.sh", "--IdentityProvider.token=''"],
+        command=["start-notebook.py", "--IdentityProvider.token=''"],
         environment=env,
         ports={internal_port: host_port},
     )

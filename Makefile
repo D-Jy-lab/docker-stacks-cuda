@@ -16,9 +16,11 @@ ALL_IMAGES:= \
 	julia-notebook \
 	scipy-notebook \
 	tensorflow-notebook \
+	pytorch-notebook \
 	datascience-notebook \
 	pyspark-notebook \
-	all-spark-notebook
+	all-spark-notebook \
+        npl-notebook
 
 # Enable BuildKit for Docker build
 export DOCKER_BUILDKIT:=1
@@ -69,7 +71,7 @@ linkcheck-docs: ## check broken links
 
 hook/%: ## run post-build hooks for an image
 	python3 -m tagging.write_tags_file --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --owner "$(OWNER)" && \
-	python3 -m tagging.write_manifest --short-image-name "$(notdir $@)" --hist-line-dir /tmp/jupyter/hist_lines/ --manifest-dir /tmp/jupyter/manifests/ --owner "$(OWNER)" && \
+	python3 -m tagging.write_manifest --short-image-name "$(notdir $@)" --hist-lines-dir /tmp/jupyter/hist_lines/ --manifests-dir /tmp/jupyter/manifests/ --owner "$(OWNER)" && \
 	python3 -m tagging.apply_tags --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --platform "$(shell uname -m)" --owner "$(OWNER)"
 hook-all: $(foreach I, $(ALL_IMAGES), hook/$(I)) ## run post-build hooks for all images
 
@@ -79,9 +81,11 @@ img-clean: img-rm-dang img-rm ## clean dangling and jupyter images
 img-list: ## list jupyter images
 	@echo "Listing $(OWNER) images ..."
 	docker images "$(OWNER)/*"
+	docker images "*/$(OWNER)/*"
 img-rm: ## remove jupyter images
 	@echo "Removing $(OWNER) images ..."
 	-docker rmi --force $(shell docker images --quiet "$(OWNER)/*") 2> /dev/null
+	-docker rmi --force $(shell docker images --quiet "*/$(OWNER)/*") 2> /dev/null
 img-rm-dang: ## remove dangling images (tagged None)
 	@echo "Removing dangling images ..."
 	-docker rmi --force $(shell docker images -f "dangling=true" --quiet) 2> /dev/null
@@ -99,7 +103,7 @@ push-all: $(foreach I, $(ALL_IMAGES), push/$(I)) ## push all tagged images
 
 run-shell/%: ## run a bash in interactive mode in a stack
 	docker run -it --rm "$(OWNER)/$(notdir $@)" $(SHELL)
-run-sudo-shell/%: ## run a bash in interactive mode as root in a stack
+run-sudo-shell/%: ## run bash in interactive mode as root in a stack
 	docker run -it --rm --user root "$(OWNER)/$(notdir $@)" $(SHELL)
 
 

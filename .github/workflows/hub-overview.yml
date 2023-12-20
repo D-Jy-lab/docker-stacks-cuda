@@ -11,11 +11,12 @@ on:
       - ".github/workflows/hub-overview.yml"
 
       - "images/*/README.md"
+  workflow_dispatch:
 
 jobs:
-  update-dockerhub-overview:
-    name: Update Docker Hub overviews
+  update-overview:
     runs-on: ubuntu-latest
+    name: update-overview (${{matrix.image}})
     if: github.repository == 'jupyter/docker-stacks'
 
     steps:

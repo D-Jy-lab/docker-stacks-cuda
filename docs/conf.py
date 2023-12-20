@@ -29,7 +29,7 @@ language = "en"
 html_theme = "alabaster"
 html_static_path = ["_static"]
 
-# File above was generated using sphinx 6.2.1 with this command:
+# The file above was generated using sphinx 6.2.1 with this command:
 # sphinx-quickstart --project "docker-stacks" --author "Project Jupyter" -v "latest" -r "latest" -l en --no-sep --no-makefile --no-batchfile
 # These are custom options for this project
 
@@ -37,16 +37,17 @@ html_theme = "sphinx_book_theme"
 html_title = "Docker Stacks documentation"
 html_logo = "_static/jupyter-logo.svg"
 html_theme_options = {
-    "path_to_docs": "docs",
-    "repository_url": "https://github.com/jupyter/docker-stacks",
-    "repository_branch": "main",
-    "use_edit_page_button": True,
-    "use_issues_button": True,
-    "use_repository_button": True,
-    "use_download_button": True,
     "logo": {
         "text": html_title,
     },
+    "navigation_with_keys": False,
+    "path_to_docs": "docs",
+    "repository_branch": "main",
+    "repository_url": "https://github.com/jupyter/docker-stacks",
+    "use_download_button": True,
+    "use_edit_page_button": True,
+    "use_issues_button": True,
+    "use_repository_button": True,
 }
 html_last_updated_fmt = "%Y-%m-%d"
 

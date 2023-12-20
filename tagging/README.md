@@ -3,19 +3,21 @@
 The main purpose of the source code in this folder is to properly tag all the images and to update [build manifests](https://github.com/jupyter/docker-stacks/wiki).
 These two processes are closely related, so the source code is widely reused.
 
-A basic example of a tag is a `python` version tag.
-For example, an image `jupyter/base-notebook` with `python 3.10.5` will have a tag `jupyter/base-notebook:python-3.10.5`.
-This tag (and all the other tags) are pushed to Docker Hub.
+A basic example of a tag is a `Python` version tag.
+For example, an image `jupyter/base-notebook` with `python 3.10.5` will have a full image name `quay.io/jupyter/base-notebook:python-3.10.5`.
+This tag (and all the other tags) are pushed to Quay.io.
 
 Manifest is a description of some important part of the image in a `markdown`.
 For example, we dump all the `conda` packages, including their versions.
 
 ## Main principles
 
-- All the images are located in a hierarchical tree. More info on [image relationships](../docs/using/selecting.md#image-relationships).
+- All the images are located in a hierarchical tree.
+  More info on [image relationships](../docs/using/selecting.md#image-relationships).
 - We have `tagger` and `manifest` classes, which can be run inside docker containers to obtain tags and build manifest pieces.
-- These classes are inherited from the parent image to all the children images.
-- Because manifests and tags might change from parent to children, `taggers` and `manifests` are reevaluated on each image. So, the values are not inherited.
+- These classes are inherited from the parent image to all the child images.
+- Because manifests and tags might change from parent to child, `taggers` and `manifests` are reevaluated on each image.
+  So, the values are not inherited.
 - To tag an image and create a manifest, run `make hook/base-notebook` (or another image of your choice).
 
 ## Source code description
@@ -48,7 +50,7 @@ The prefix of commit hash (namely, 12 letters) is used as an image tag to make i
 
 ### Tagger
 
-`Tagger` is a class which can be run inside a docker container to calculate some tag for an image.
+`Tagger` is a class that can be run inside a docker container to calculate some tag for an image.
 
 All the taggers are inherited from `TaggerInterface`:
 
@@ -77,12 +79,12 @@ class SHATagger(TaggerInterface):
 ```
 
 - `taggers.py` contains all the taggers.
-- `tag_image.py` is a python executable which is used to tag the image.
+- `tag_image.py` is a Python executable that is used to tag the image.
 
 ### Manifest
 
 `ManifestHeader` is a build manifest header.
-It contains information about `Build datetime`, `Docker image size` and `Git commit` info.
+It contains the following sections: `Build timestamp`, `Docker image size`, and `Git commit` info.
 
 All the other manifest classes are inherited from `ManifestInterface`:
 
@@ -95,7 +97,7 @@ class ManifestInterface:
         raise NotImplementedError
 ```
 
-- `markdown_piece(container)` method returns a piece of markdown file to be used as a part of the build manifest.
+- The `markdown_piece(container)` method returns a piece of markdown file to be used as a part of the build manifest.
 
 `AptPackagesManifest` example:
 
@@ -106,14 +108,16 @@ from tagging.manifests import ManifestInterface, quoted_output
 class AptPackagesManifest(ManifestInterface):
     @staticmethod
     def markdown_piece(container) -> str:
-        return "\n".join(
-            ["## Apt Packages", "", quoted_output(container, "apt list --installed")]
-        )
+        return f"""\
+## Apt Packages
+
+{quoted_output(container, "apt list --installed")}"""
 ```
 
 - `quoted_output` simply runs the command inside a container using `DockerRunner.run_simple_command` and wraps it to triple quotes to create a valid markdown piece.
+  It also adds the command which was run to the markdown piece.
 - `manifests.py` contains all the manifests.
-- `write_manifest.py` is a python executable which is used to create the build manifest and history line for an image.
+- `write_manifest.py` is a Python executable that is used to create the build manifest and history line for an image.
 
 ### Images Hierarchy
 

@@ -14,7 +14,7 @@ This page provides details about features specific to one or more images.
   Every new spark context that is created is put onto an incrementing port (i.e. 4040, 4041, 4042, etc.), and it might be necessary to open multiple ports.
   ```
 
-  For example: `docker run --detach -p 8888:8888 -p 4040:4040 -p 4041:4041 jupyter/pyspark-notebook`.
+  For example, `docker run --detach -p 8888:8888 -p 4040:4040 -p 4041:4041 quay.io/jupyter/pyspark-notebook`.
 
 #### IPython low-level output capture and forward
 
@@ -42,7 +42,7 @@ ipython profile create
 You can build a `pyspark-notebook` image with a different `Spark` version by overriding the default value of the following arguments at build time.
 `all-spark-notebook` is inherited from `pyspark-notebook`, so you have to first build `pyspark-notebook` and then `all-spark-notebook` to get the same version in `all-spark-notebook`.
 
-- Spark distribution is defined by the combination of Spark, Hadoop and Scala versions and verified by the package checksum,
+- Spark distribution is defined by the combination of Spark, Hadoop, and Scala versions and verified by the package checksum,
   see [Download Apache Spark](https://spark.apache.org/downloads.html) and the [archive repo](https://archive.apache.org/dist/spark/) for more information.
 
   - `spark_version`: The Spark version to install (`3.3.0`).
@@ -53,9 +53,9 @@ You can build a `pyspark-notebook` image with a different `Spark` version by ove
     - This version needs to match the version supported by the Spark distribution used above.
     - See [Spark Overview](https://spark.apache.org/docs/latest/#downloading) and [Ubuntu packages](https://packages.ubuntu.com/search?keywords=openjdk).
 
-- Starting with _Spark >= 3.2_, the distribution file might contain Scala version.
+- Starting with _Spark >= 3.2_, the distribution file might contain the Scala version.
 
-For example, here is how to build a `pyspark-notebook` image with Spark `3.2.0`, Hadoop `3.2` and OpenJDK `11`.
+For example, here is how to build a `pyspark-notebook` image with Spark `3.2.0`, Hadoop `3.2`, and OpenJDK `11`.
 
 ```{warning}
 This recipe is not tested and might be broken.
@@ -72,7 +72,7 @@ docker build --rm --force-rm \
     --build-arg openjdk_version=11
 
 # Check the newly built image
-docker run -it --rm jupyter/pyspark-notebook:spark-3.2.0 pyspark --version
+docker run -it --rm quay.io/jupyter/pyspark-notebook:spark-3.2.0 pyspark --version
 
 # Welcome to
 #       ____              __
@@ -161,7 +161,7 @@ Connection to Spark Cluster on **[Standalone Mode](https://spark.apache.org/docs
 0. Verify that the docker image (check the Dockerfile) and the Spark Cluster, which is being
    deployed, run the same version of Spark.
 1. [Deploy Spark in Standalone Mode](https://spark.apache.org/docs/latest/spark-standalone.html).
-2. Run the Docker container with `--net=host` in a location that is network addressable by all of
+2. Run the Docker container with `--net=host` in a location that is network-addressable by all of
    your Spark workers.
    (This is a [Spark networking requirement](https://spark.apache.org/docs/latest/cluster-overview.html#components).)
 
@@ -174,7 +174,7 @@ Connection to Spark Cluster on **[Standalone Mode](https://spark.apache.org/docs
 ##### Standalone Mode in Python
 
 The **same Python version** needs to be used on the notebook (where the driver is located) and on the Spark workers.
-The python version used at the driver and worker side can be adjusted by setting the environment variables `PYSPARK_PYTHON` and/or `PYSPARK_DRIVER_PYTHON`,
+The Python version used on the driver and worker side can be adjusted by setting the environment variables `PYSPARK_PYTHON` and/or `PYSPARK_DRIVER_PYTHON`,
 see [Spark Configuration][spark-conf] for more information.
 
 ```python

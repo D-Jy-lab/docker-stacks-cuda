@@ -14,7 +14,7 @@ USER root
 
 # Spark dependencies
 # Default values can be overridden at build time
-# (ARGS are in lower case to distinguish them from ENV)
+# (ARGS are in lowercase to distinguish them from ENV)
 ARG spark_version="3.5.0"
 ARG hadoop_version="3"
 ARG scala_version
@@ -34,7 +34,7 @@ RUN apt-get update --yes && \
 WORKDIR /tmp
 
 # You need to use https://archive.apache.org/dist/ website if you want to download old Spark versions
-# But it seems to be slower, that's why we use recommended site for download
+# But it seems to be slower, that's why we use the recommended site for download
 RUN if [ -z "${scala_version}" ]; then \
     curl --progress-bar --location --output "spark.tgz" \
         "https://dlcdn.apache.org/spark/spark-${APACHE_SPARK_VERSION}/spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz"; \
@@ -57,7 +57,7 @@ RUN if [ -z "${scala_version}" ]; then \
     ln -s "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}-scala${scala_version}" "${SPARK_HOME}"; \
   fi && \
   # Add a link in the before_notebook hook in order to source automatically PYTHONPATH && \
-  ln -s "${SPARK_HOME}/sbin/spark-config.sh" /usr/local/bin/before-notebook.d/spark-config.sh
+  ln -s "${SPARK_HOME}/sbin/spark-config.sh" /usr/local/bin/before-notebook.d/10spark-config.sh
 
 # Configure IPython system-wide
 COPY ipython_kernel_config.py "/etc/ipython/"
@@ -73,6 +73,8 @@ USER ${NB_UID}
 # 1. Check out the Spark branch you are on.
 # 2. Find the pandas version in the file spark/dev/infra/Dockerfile.
 RUN mamba install --yes \
+    'grpcio-status' \
+    'grpcio' \
     'pandas=2.0.3' \
     'pyarrow' && \
     mamba clean --all -f -y && \
