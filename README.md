@@ -27,15 +27,18 @@
 
 ```bash
 # 临时使用
-docker run -it --rm -p 10000:8888 -v "${PWD}":/home/duan/work duan2001/npl-notebook
+docker run --gpus all --ipc=host -it --rm -p 10000:8888 -v "${PWD}":/home/duan/work duan2001/npl-notebook
 # 查看登录token
 jupyter server list
 
 # 后台运行
-docker run --gpus all -d --ipc=host -p <开放的端口>:8888 --name=jupyter --restart=unless-stopped -v <外部存储路径>:/home/duan/work -e GRANT_SUDO=yes --user root duan2001/npl-notebook
+docker run --gpus all -d --shm-size="8g" -p <开放的端口>:8888 --name=jupyter --restart=unless-stopped -v <外部存储路径>:/home/duan/work -e GRANT_SUDO=yes --user root duan2001/npl-notebook
 # 查看登录token
 docker exec jupyter jupyter server list
 ```
+
+如需指定某几个GPU请参考[文档](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html)。
+另外--ipc=host参数可能存在安全隐患，建议对外开放时使用--shm-size="8g"(数字为共享内存大小)。
 
 ## 其他信息
 
