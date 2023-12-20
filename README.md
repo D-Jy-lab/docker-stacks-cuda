@@ -10,18 +10,18 @@
 
 详细信息请参考[Jupyter Docker Stacks官方文档](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html)。以下是本项目提供的Docker镜像：
 
-- `duan2001/docker-stacks-foundation`：基础镜像，不包含Jupyter。
-- `duan2001/base-notebook`：添加了基础Jupyter应用程序。
-- `duan2001/minimal-notebook`：添加了常用命令行工具。
-- `duan2001/r-notebook`：包含R语言的流行软件包。
-- `duan2001/julia-notebook`：包含Julia语言的流行软件包。
-- `duan2001/scipy-notebook`：包含科学计算的流行软件包。
-- `duan2001/tensorflow-notebook`：包含TensorFlow深度学习库。
-- `duan2001/pytorch-notebook`：包含PyTorch深度学习库。
-- `duan2001/datascience-notebook`：包含来自Python、R和Julia社区的数据分析库。
-- `duan2001/npl-notebook`：包含以上所有内容和其他深度学习相关的库。
-- `duan2001/pyspark-notebook`：包含Apache Spark。
-- `duan2001/all-spark-notebook`：包含Apache Spark和R语言支持。
+- `[duan2001/docker-stacks-foundation](https://hub.docker.com/r/duan2001/docker-stacks-foundation)`：基础镜像，不包含Jupyter。
+- `[duan2001/base-notebook](https://hub.docker.com/r/duan2001/base-notebook)`：添加了基础Jupyter应用程序。
+- `[duan2001/minimal-notebook](https://hub.docker.com/r/duan2001/minimal-notebook)`：添加了常用命令行工具。
+- `[duan2001/r-notebook](https://hub.docker.com/r/duan2001/r-notebook)`：包含R语言的流行软件包。
+- `[duan2001/julia-notebook](https://hub.docker.com/r/duan2001/julia-notebook)`：包含Julia语言的流行软件包。
+- `[duan2001/scipy-notebook](https://hub.docker.com/r/duan2001/scipy-notebook)`：包含科学计算的流行软件包。
+- `[duan2001/tensorflow-notebook](https://hub.docker.com/r/duan2001/tensorflow-notebook)`：包含TensorFlow深度学习库。
+- `[duan2001/pytorch-notebook](https://hub.docker.com/r/duan2001/pytorch-notebook)`：包含PyTorch深度学习库。
+- `[duan2001/datascience-notebook](https://hub.docker.com/r/duan2001/datascience-notebook)`：包含来自Python、R和Julia社区的数据分析库。
+- `[duan2001/npl-notebook](https://hub.docker.com/r/duan2001/npl-notebook)`：包含以上所有内容和其他深度学习相关的库。
+- `[duan2001/pyspark-notebook](https://hub.docker.com/r/duan2001/pyspark-notebook)`：包含Apache Spark。
+- `[duan2001/all-spark-notebook](https://hub.docker.com/r/duan2001/all-spark-notebook)`：包含Apache Spark和R语言支持。
 
 ### 使用示例
 
