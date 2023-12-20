@@ -27,7 +27,7 @@
 
 ```bash
 # 临时使用
-docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work duan2001/npl-notebook
+docker run -it --rm -p 10000:8888 -v "${PWD}":/home/duan/work duan2001/npl-notebook
 # 查看登录token
 jupyter server list
 
