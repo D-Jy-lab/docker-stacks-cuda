@@ -1,84 +1,47 @@
-# Jupyter Docker Stacks
+# Jupyter Docker Stacks with NVIDIA GPU
 
-[![GitHub actions badge](https://github.com/jupyter/docker-stacks/actions/workflows/docker.yml/badge.svg)
-](https://github.com/jupyter/docker-stacks/actions/workflows/docker.yml?query=branch%3Amain "Docker images build status")
-[![Read the Docs badge](https://img.shields.io/readthedocs/jupyter-docker-stacks.svg)](https://jupyter-docker-stacks.readthedocs.io/en/latest/ "Documentation build status")
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter/docker-stacks/main.svg)](https://results.pre-commit.ci/latest/github/jupyter/docker-stacks/main "pre-commit.ci build status")
-[![Discourse badge](https://img.shields.io/discourse/users.svg?color=%23f37626&server=https%3A%2F%2Fdiscourse.jupyter.org)](https://discourse.jupyter.org/ "Jupyter Discourse Forum")
-[![Binder badge](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter/docker-stacks/main?urlpath=lab/tree/README.ipynb "Launch a quay.io/jupyter/base-notebook container on mybinder.org")
+本项目基于原有的Jupyter Docker Stacks项目，增加了对NVIDIA GPU的支持。
 
-Jupyter Docker Stacks are a set of ready-to-run [Docker images](https://quay.io/organization/jupyter) containing Jupyter applications and interactive computing tools.
-You can use a stack image to do any of the following (and more):
+## 快速开始
 
-- Start a personal Jupyter Server with the JupyterLab frontend (default)
-- Run JupyterLab for a team using JupyterHub
-- Start a personal Jupyter Server with the Jupyter Notebook frontend in a local Docker container
-- Write your own project Dockerfile
+在使用本项目之前，您需要参考NVIDIA的[教程](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)来配置环境（假设您已安装好GPU驱动和Docker环境，如未配置，请先行配置）。
 
-## Quick Start
+### 容器说明
 
-You can try a [relatively recent build of the quay.io/jupyter/base-notebook image on mybinder.org](https://mybinder.org/v2/gh/jupyter/docker-stacks/main?urlpath=lab/tree/README.ipynb)
-by simply clicking the preceding link.
-Otherwise, the examples below may help you get started if you [have Docker installed](https://docs.docker.com/get-docker/),
-know [which Docker image](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html) you want to use, and want to launch a single Jupyter Application in a container.
+详细信息请参考[Jupyter Docker Stacks官方文档](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html)。以下是本项目提供的Docker镜像：
 
-The [User Guide on ReadTheDocs](https://jupyter-docker-stacks.readthedocs.io/en/latest/) describes additional uses and features in detail.
+- `duan2001/docker-stacks-foundation`：基础镜像，不包含Jupyter。
+- `duan2001/base-notebook`：添加了基础Jupyter应用程序。
+- `duan2001/minimal-notebook`：添加了常用命令行工具。
+- `duan2001/r-notebook`：包含R语言的流行软件包。
+- `duan2001/julia-notebook`：包含Julia语言的流行软件包。
+- `duan2001/scipy-notebook`：包含科学计算的流行软件包。
+- `duan2001/tensorflow-notebook`：包含TensorFlow深度学习库。
+- `duan2001/pytorch-notebook`：包含PyTorch深度学习库。
+- `duan2001/datascience-notebook`：包含来自Python、R和Julia社区的数据分析库。
+- `duan2001/npl-notebook`：包含以上所有内容和其他深度学习相关的库。
+- `duan2001/pyspark-notebook`：包含Apache Spark。
+- `duan2001/all-spark-notebook`：包含Apache Spark和R语言支持。
 
-```{note}
-Since `2023-10-20` our images are only pushed to `Quay.io` registry.
-Older images are available on Docker Hub, but they will no longer be updated.
-```
-
-### Example 1
-
-This command pulls the `jupyter/scipy-notebook` image tagged `2023-11-17` from Quay.io if it is not already present on the local host.
-It then starts a container running a Jupyter Server with the JupyterLab frontend and exposes the container's internal port `8888` to port `10000` of the host machine:
+### 使用示例
 
 ```bash
-docker run -p 10000:8888 quay.io/jupyter/scipy-notebook:2023-11-17
+# 临时使用
+docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work duan2001/npl-notebook
+# 查看登录token
+jupyter server list
+
+# 后台运行
+docker run --gpus all -d --ipc=host -p <开放的端口>:8888 --name=jupyter --restart=unless-stopped -v <外部存储路径>:/home/duan/work -e GRANT_SUDO=yes --user root duan2001/npl-notebook
+# 查看登录token
+docker exec jupyter jupyter server list
 ```
 
-You can modify the port on which the container's port is exposed by [changing the value of the `-p` option](https://docs.docker.com/engine/reference/run/#expose-incoming-ports) to `-p 8888:8888`.
+## 其他信息
 
-Visiting `http://<hostname>:10000/?token=<token>` in a browser loads JupyterLab,
-where:
+请参考原始项目的[官方说明](https://github.com/jupyter/docker-stacks/blob/main/README.md)。如果您已经安装了Docker，知道您想使用哪个Docker镜像，并且想在容器中启动单个Jupyter应用程序，下面的例子可以帮助您开始。
 
-- The `hostname` is the name of the computer running Docker
-- The `token` is the secret token printed in the console.
-
-The container remains intact for restart after the Server exits.
-
-### Example 2
-
-This command pulls the `jupyter/datascience-notebook` image tagged `2023-11-17` from Quay.io if it is not already present on the local host.
-It then starts an _ephemeral_ container running a Jupyter Server with the JupyterLab frontend and exposes the server on host port 10000.
-
-```bash
-docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work quay.io/jupyter/datascience-notebook:2023-11-17
-```
-
-The use of the `-v` flag in the command mounts the current working directory on the host (`${PWD}` in the example command) as `/home/jovyan/work` in the container.
-The server logs appear in the terminal.
-
-Visiting `http://<hostname>:10000/?token=<token>` in a browser loads JupyterLab.
-
-Due to the usage of [the flag `--rm`](https://docs.docker.com/engine/reference/run/#clean-up---rm) Docker automatically cleans up the container and removes the file
-system when the container exits, but any changes made to the `~/work` directory and its files in the container will remain intact on the host.
-[The `-it` flag](https://docs.docker.com/engine/reference/commandline/run/#name) allocates pseudo-TTY.
-
-```{note}
-By default, [jupyter's root_dir](https://jupyter-server.readthedocs.io/en/latest/other/full-config.html) is `/home/jovyan`.
-So, new notebooks will be saved there, unless you change the directory in the file browser.
-
-To change the default directory, you must specify `ServerApp.root_dir` by adding this line to the previous command: `start-notebook.py --ServerApp.root_dir=/home/jovyan/work`.
-```
-
-## Choosing Jupyter frontend
-
-JupyterLab is the default for all the Jupyter Docker Stacks images.
-It is still possible to switch back to Jupyter Notebook (or to launch a different startup command).
-You can achieve this by passing the environment variable `DOCKER_STACKS_JUPYTER_CMD=notebook` (or any other valid `jupyter` subcommand) at container startup;
-more information is available in the [documentation](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#alternative-commands).
+[Jupyter Docker Stacks 用户指南](https://jupyter-docker-stacks.readthedocs.io/en/latest/)详细描述了其他用法和特性。
 
 ## Resources
 
@@ -88,35 +51,6 @@ more information is available in the [documentation](https://jupyter-docker-stac
 - [Jupyter Website](https://jupyter.org)
 - [Images on Quay.io](https://quay.io/organization/jupyter)
 
-## Acknowledgments
-
-- Starting from `2022-07-05`, `aarch64` self-hosted runners were sponsored by [`@mathbunnyru`](https://github.com/mathbunnyru/).
-  Please, consider [sponsoring his work](https://github.com/sponsors/mathbunnyru) on GitHub
-- Starting from `2023-10-31`, `aarch64` self-hosted runners are sponsored by an amazing [`2i2c non-profit organization`](https://2i2c.org)
-
-## CPU Architectures
-
-- We publish containers for both `x86_64` and `aarch64` platforms
-- Single-platform images have either `aarch64-` or `x86_64-` tag prefixes, for example, `quay.io/jupyter/base-notebook:aarch64-python-3.10.5`
-- Starting from `2022-09-21`, we create multi-platform images (except `tensorflow-notebook`)
-- Starting from `2023-06-01`, we create a multi-platform `tensorflow-notebook` image as well
-
-## Using old images
-
-This project only builds one set of images at a time.
-If you want to use the older `Ubuntu` and/or `Python` version, you can use the following images:
-
-| Build Date   | Ubuntu | Python | Tag            |
-| ------------ | ------ | ------ | -------------- |
-| 2022-10-09   | 20.04  | 3.7    | `1aac87eb7fa5` |
-| 2022-10-09   | 20.04  | 3.8    | `a374cab4fcb6` |
-| 2022-10-09   | 20.04  | 3.9    | `5ae537728c69` |
-| 2022-10-09   | 20.04  | 3.10   | `f3079808ca8c` |
-| 2022-10-09   | 22.04  | 3.7    | `b86753318aa1` |
-| 2022-10-09   | 22.04  | 3.8    | `7285848c0a11` |
-| 2022-10-09   | 22.04  | 3.9    | `ed2908bbb62e` |
-| 2023-05-30   | 22.04  | 3.10   | `4d70cf8da953` |
-| weekly build | 22.04  | 3.11   | `latest`       |
 
 ## Contributing
 
