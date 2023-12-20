@@ -37,8 +37,10 @@ docker run --gpus all -d --shm-size="8g" -p <开放的端口>:8888 --name=jupyte
 docker exec jupyter jupyter server list
 ```
 
-如需指定某几个GPU请参考[文档](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html)。
-另外--ipc=host参数可能存在安全隐患，建议对外开放时使用--shm-size="8g"(数字为共享内存大小)。
+补充说明
+
+- 如需指定某几个GPU请参考[文档](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/docker-specialized.html)。
+- 另外--ipc=host参数可能存在安全隐患，建议对外开放时使用--shm-size="8g"(数字为共享内存大小)。
 
 ## 其他信息
 
